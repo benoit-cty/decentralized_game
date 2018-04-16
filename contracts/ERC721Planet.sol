@@ -17,9 +17,23 @@ contract ERC721Planet is SimpleERC721 {
     string public name = "Planet Token";
     string public symbol = "PLNT";
 
-    mapping(uint => string) public tokenToPixelsColors;
-    mapping(uint => string) public tokenToDescription;
-    mapping(uint => string) public tokenToLink;
+    struct Planet {
+      //uint id;
+      bytes32 name;
+      string description;
+      bytes32 ipfs;
+      address owner;
+      address discoveredBy;
+      uint x;
+      uint y;
+      uint z;
+      bool discovered;
+      //bool forSale;
+      uint price; // 0 => not for sale
+      uint planetPositionInList;
+    }
+    mapping (uint => Planet) planets;
+    uint[] private planetsList; // WARNING: private is still readable ?
 
     // the one who deployed the smart contract
     address public owner;
@@ -27,7 +41,7 @@ contract ERC721Planet is SimpleERC721 {
     // The ether balance of all users of the smart contract
     mapping(address => uint) public BalanceOfEther;
 
-    mapping(uint => uint) public tokenToSalePrice; // if equals zero, it's not up for sale
+
 
     // -----------------------------------------------------------------------------------------------------------
     // ------------------------------------------------- Constructor ---------------------------------------------
@@ -45,27 +59,23 @@ contract ERC721Planet is SimpleERC721 {
     event EmitBought(uint256 _tokenId, uint256 _at, address _by);
     event EmitSaleOfferRemoved(uint256 _tokenId);
 
-    event EmitChangedPixelsColors(uint256 _tokenId);
-    event EmitChangedDescription(uint256 _tokenId);
-    event EmitChangedLink(uint256 _tokenId);
-
 
     // -----------------------------------------------------------------------------------------------------------
     // -------------------------------------------------- Modifiers ----------------------------------------------
     // -----------------------------------------------------------------------------------------------------------
 
     modifier onlyNonexistentToken(uint _tokenId) {
-        require(tokenIdToOwner[_tokenId] == address(0));
+        require(planets[_tokenId].owner == address(0));
         _;
     }
 
     modifier isUpForSale(uint _tokenId) {
-        require(tokenToSalePrice[_tokenId] > 0);
+        require(planets[_tokenId].price > 0);
         _;
     }
 
     modifier isNotUpForSale(uint _tokenId) {
-        require(tokenToSalePrice[_tokenId] == 0);
+        require(planets[_tokenId].price == 0);
         _;
     }
 
@@ -78,43 +88,45 @@ contract ERC721Planet is SimpleERC721 {
     // ------------------------------------------------ View functions -------------------------------------------
     // -----------------------------------------------------------------------------------------------------------
 
+    function getPlanetCount() public constant returns(uint count) {
+      return planetsList.length;
+    }
+    function getPlanet(uint _tokenId) public constant returns( bytes32 _name, string _description, bytes32 _ipfs, uint _price){
+      return (planets[_tokenId].name, planets[_tokenId].description, planets[_tokenId].ipfs, planets[_tokenId].price);
+    }
+
     // -----------------------------------------------------------------------------------------------------------
     // --------------------------------------------- Core Public functions ---------------------------------------
     // -----------------------------------------------------------------------------------------------------------
 
     /// @dev Initial acquisition of the token
-    function initialBuyToken (uint _tokenId) payable public onlyNonexistentToken (_tokenId) {
-        require(msg.value == 100 finney); // 0.1 eth = 100 finney
-        require(_tokenId < 10000);
+/*    function initialBuyPlanet (uint _tokenId) payable public onlyNonexistentToken (_tokenId) {
+        require(msg.value == planets[_tokenId].price); // 0.1 eth = 100 finney
+        require(_tokenId < 10000); // Limit to 10 000 Planets
 
         BalanceOfEther[owner] += msg.value;
 
         _setTokenOwner(_tokenId, msg.sender);
         _addTokenToOwnersList(msg.sender, _tokenId);
 
-        totalSupply += 1;
-
         emit EmitBought(_tokenId, msg.value, msg.sender);
     }
+*/
+    /// @dev Create a Planet
+    function createPlanet(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price) public
+    {
+        if(msg.sender != owner) revert();
+        // TODO: Check if already exist ?
 
-    /// @dev changing the colors of the token
-    function setTokenPixelsColors (uint _tokenId, string _newColors) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) {
-        tokenToPixelsColors[_tokenId] = _newColors;
-        emit EmitChangedPixelsColors(_tokenId);
+        planets[_tokenId].price = _price;
+        planets[_tokenId].description = _description;
+        planets[_tokenId].name = _name;
+        planets[_tokenId].ipfs = _ipfs;
+        //planets[_tokenId].owner =
+        //planets[_tokenId].
+        planets[_tokenId].planetPositionInList = planetsList.push(_tokenId) - 1;
+
     }
-
-    /// @dev changing the description of the token
-    function setTokenDescription (uint _tokenId, string _newDescription) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) {
-        tokenToDescription[_tokenId] = _newDescription;
-        emit EmitChangedDescription(_tokenId);
-    }
-
-    /// @dev changing the link of the token
-    function setTokenLink (uint _tokenId, string _newLink) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) {
-        tokenToLink[_tokenId] = _newLink;
-        emit EmitChangedLink(_tokenId);
-    }
-
     /// @dev withdraw ether off the contract
     function withdraw() public
     {
@@ -125,19 +137,19 @@ contract ERC721Planet is SimpleERC721 {
 
     /// @dev putting token up for sale
     /// @notice the _price is in Wei
-    function sellToken (uint _tokenId, uint _price) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) isNotUpForSale(_tokenId) {
+    function sellPlanet (uint _tokenId, uint _price) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) isNotUpForSale(_tokenId) {
         require(_price > 0);
 
-        tokenToSalePrice[_tokenId] = _price;
+        planets[_tokenId].price = _price;
 
         emit EmitUpForSale(_tokenId, _price);
     }
 
     /// @dev buying token from someone
-    function buyToken (uint _tokenId) payable public onlyExtantToken (_tokenId) isUpForSale (_tokenId) onlyNotOwnerOfToken (_tokenId) {
-        require(msg.value >= tokenToSalePrice[_tokenId]);
+    function buyPlanet (uint _tokenId) payable public onlyExtantToken (_tokenId) isUpForSale (_tokenId) onlyNotOwnerOfToken (_tokenId) {
+        require(msg.value == planets[_tokenId].price);
 
-        tokenToSalePrice[_tokenId] = 0;
+        planets[_tokenId].price = 0;
         BalanceOfEther[ownerOf(_tokenId)] += msg.value;
 
         _clearApprovalAndTransfer(ownerOf(_tokenId), msg.sender, _tokenId);
@@ -146,8 +158,8 @@ contract ERC721Planet is SimpleERC721 {
     }
 
     /// @dev removing a sale proposition
-    function removeTokenFromSale (uint _tokenId) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) isUpForSale (_tokenId) {
-        tokenToSalePrice[_tokenId] = 0;
+    function removePlanetFromSale (uint _tokenId) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) isUpForSale (_tokenId) {
+        planets[_tokenId].price = 0;
         emit EmitSaleOfferRemoved(_tokenId);
     }
 
@@ -162,7 +174,7 @@ contract ERC721Planet is SimpleERC721 {
         _clearTokenApproval(_tokenId);
         _removeTokenFromOwnersList(_from, _tokenId);
 
-        tokenToSalePrice[_tokenId] = 0;
+        planets[_tokenId].price = 0;
 
         _setTokenOwner(_tokenId, _to);
         _addTokenToOwnersList(_to, _tokenId);
