@@ -3,7 +3,7 @@ pragma solidity ^0.4.18;
 import "./SimpleERC721.sol";
 
   	/**
-	 * @title ERC721Planet
+	 * @title ERC721SpaceShip
 	 *
 	 * A script that manages selling of spaceships in the Universe
 	*/
@@ -32,7 +32,7 @@ contract ERC721SpaceShip is SimpleERC721 {
       uint price; // 0 => not for sale
       uint extractCapacity;
       uint storageCapacity;
-      uint planetPositionInList;
+      uint spaceshipPositionInList;
     }
     mapping (uint => SpaceShip) spaceships;
     uint[] private spaceshipsList; // WARNING: private is still readable ?
@@ -115,7 +115,7 @@ contract ERC721SpaceShip is SimpleERC721 {
         emit EmitBought(_tokenId, msg.value, msg.sender);
     }
 */
-    /// @dev Create a Planet
+    /// @dev Create a SpaceShip
     function createSpaceShip(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity) public
     {
         if(msg.sender != owner) revert();
