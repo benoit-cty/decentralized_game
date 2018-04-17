@@ -1,7 +1,7 @@
 # decentralized_game
 A game for mid-term exam of The School.ai
 
-# Installation step
+# Creation step
 ```
 mkdir decentralized_game
 cd decentralized_game/
@@ -10,16 +10,12 @@ npm init -y
 npm install -E zeppelin-solidity
 ```
 
-## Update contract
-In a terminal run:
+## Test contract
+run ganache-cli
 ```
-ganache-cli --accounts 50
-```
-In another terminal
-```
-cd contracts
-node ../test/deploy_planet_contract.js
-node ../test/run_planet_tests.js
+truffle compile
+truffle migrate
+truffle test
 ```
 
 ## Generating planets and spaceship
