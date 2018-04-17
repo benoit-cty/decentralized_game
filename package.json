@@ -1,7 +1,7 @@
 {
   "name": "decentralized_game",
   "version": "1.0.0",
-  "description": "",
+  "description": "A game for mid-term exam of The School.ai",
   "main": "truffle-config.js",
   "directories": {
     "test": "test"
@@ -14,5 +14,13 @@
   "license": "ISC",
   "dependencies": {
     "zeppelin-solidity": "1.8.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/trancept/decentralized_game.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trancept/decentralized_game/issues"
+  },
+  "homepage": "https://github.com/trancept/decentralized_game#readme"
 }
