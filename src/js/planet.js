@@ -41,6 +41,30 @@ App = {
     $(document).on('click', '.btn-adopt', App.handleAdopt);
   },
 
+  listPlanets: function (planetInstance, planetNumber){
+    //planets = [];
+    console.log("getPlanets...");
+    var count = planetNumber;
+    console.log("getPlanets =" + count);
+    var planetRow = $('#planetsRow');
+    var planetTemplate = $('#planetTemplate');
+    for (let planetID = 0; planetID < count; planetID++) {
+      //var planetID = planetInstance.planetsList[i];
+      //planets.push(planetID);
+      console.log("planetInstance.getPlanet(planetID):");
+      planetInstance.getPlanet(planetID).then(function(planet) {
+        //console.log(planet);
+        //console.log(planetID + " - " + web3.toAscii(planet[0]) + " - "  + planet[1] + " - "  + planet[3] + " - "  + planet[4]);
+        planetTemplate.find('.panel-title').text(web3.toAscii(planet[0]));
+        planetTemplate.find('.planet-desc').text(planet[1]);
+        //planetTemplate.find('img').attr('src', data[i].picture);
+        planetRow.append(planetTemplate.html());
+      }).catch(function(err) {
+        console.log('ERROR - listPlanets : ' + err.message);
+      });
+    }
+  },
+
   updatePlanet: function(planets, account) {
     var planetInstance;
 
@@ -50,13 +74,14 @@ App = {
       return planetInstance.getPlanetCount();
     }).then(function(planets) {
       var msg = planets + " ";
+      App.listPlanets(planetInstance, planets);
       console.log("msg="+msg);
       $('#planets-count').html(msg);
-      for (i = 0; i < planets.length; i++) {
+      /*for (i = 0; i < planets; i++) {
         if (planets[i] !== '0x0000000000000000000000000000000000000000') {
           $('.panel-planet').eq(i).find('button').text('Success').attr('disabled', true);
         }
-      }
+      }*/
     }).catch(function(err) {
       console.log(err.message);
     });

@@ -95,6 +95,10 @@ contract ERC721Planet is SimpleERC721 {
       return (planets[_tokenId].name, planets[_tokenId].description, planets[_tokenId].ipfs, planets[_tokenId].price);
     }
 
+    function planetExist(uint _tokenId) public constant returns(bool isIndeed) {
+      if(planetsList.length == 0) return false;
+      return (planetsList[planets[_tokenId].planetPositionInList] == _tokenId);
+    }
     // -----------------------------------------------------------------------------------------------------------
     // --------------------------------------------- Core Public functions ---------------------------------------
     // -----------------------------------------------------------------------------------------------------------
@@ -116,8 +120,7 @@ contract ERC721Planet is SimpleERC721 {
     function createPlanet(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price) public
     {
         if(msg.sender != owner) revert();
-        // TODO: Check if already exist ?
-
+        if(planetExist(_tokenId)) revert();
         planets[_tokenId].price = _price;
         planets[_tokenId].description = _description;
         planets[_tokenId].name = _name;
@@ -125,7 +128,18 @@ contract ERC721Planet is SimpleERC721 {
         //planets[_tokenId].owner =
         //planets[_tokenId].
         planets[_tokenId].planetPositionInList = planetsList.push(_tokenId) - 1;
+    }
 
+    /// @dev Update a Planet
+    function updatePlanet(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price) public
+    {
+        if(!planetExist(_tokenId)) revert();
+        //TODO: Check who can update it other than owner of the contract ?
+        if(msg.sender != owner) revert();
+        planets[_tokenId].price = _price;
+        planets[_tokenId].description = _description;
+        planets[_tokenId].name = _name;
+        planets[_tokenId].ipfs = _ipfs;
     }
     /// @dev withdraw ether off the contract
     function withdraw() public
