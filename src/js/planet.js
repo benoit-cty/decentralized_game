@@ -47,11 +47,14 @@ App = {
     App.contracts.Planet.deployed().then(function(instance) {
       planetInstance = instance;
 
-      return planetInstance.planetsList.call();
+      return planetInstance.getPlanetCount();
     }).then(function(planets) {
+      var msg = planets + " ";
+      console.log("msg="+msg);
+      $('#planets-count').html(msg);
       for (i = 0; i < planets.length; i++) {
-        if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-          $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
+        if (planets[i] !== '0x0000000000000000000000000000000000000000') {
+          $('.panel-planet').eq(i).find('button').text('Success').attr('disabled', true);
         }
       }
     }).catch(function(err) {
