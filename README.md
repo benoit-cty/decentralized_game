@@ -2,6 +2,7 @@
 A game for mid-term exam of The School.ai
 
 ## Rules of the game
+
 Every gamers start from Earth and need to buy SpaceShip to explore other system.
 Or buy a Planet who has already been discovered.
 Ppl who own an entire system get improvement. For example could build SpaceShip for others.
@@ -10,7 +11,7 @@ Once you own a planet you could buy improvement from others planets.
 Spaceship could buy ressources from Planet and sell them to other planets.
 Every item could be sold to others player.
 
-## Technical architecture
+## Technical architecture
 
 Planets and Spaceship are ERC721 tokens so it could be bougth and sold with ETH.
 
@@ -19,7 +20,8 @@ We use Truffle as a the main framework. Ganache-cli as test blockchain.
 ![Architecture](./doc/architecture.jpg)
 
 
-### Generating planets and spaceship
+### Generating planets and spaceship
+
 To create the planets and spaceship we do :
 - Scrapping of http://www.scifiideas.com/spaceship-name-generator/ and store it in a JSON
 - Iterate the JSON and loading it into our contracts with "truffle exec tools/load_planet_to_contract.js"
@@ -40,7 +42,8 @@ To create the planets and spaceship we do :
 }
 ```
 
-## Project tree
+## Project tree
+
 ```
 ├── bs-config.json => Config for the webserver
 ├── build
@@ -93,8 +96,11 @@ To create the planets and spaceship we do :
 ├── truffle-config.js
 └── truffle.js
 ```
-# Creation step
+
+## Creation step
+
 ```
+sudo npm install -g ganache-cli truffle
 mkdir decentralized_game
 cd decentralized_game/
 truffle init
@@ -102,13 +108,21 @@ npm init -y
 npm install -E zeppelin-solidity
 ```
 
-## Test contract
+## Run the project
+
 run ganache-cli
 ```
+git clone https://github.com/trancept/decentralized_game.git
+cd decentralized_game
+npm install
 truffle compile
 truffle migrate
 truffle test
+truffle exec tools/load_planet_to_contract.js
+npm run dev
 ```
 
 ## Inspiration
-- https://hackernoon.com/from-a-to-z-making-the-mvp-of-a-real-dapp-on-ethereum-and-deploying-it-50c750ef0c4e
+
+- For ERC721 : https://hackernoon.com/from-a-to-z-making-the-mvp-of-a-real-dapp-on-ethereum-and-deploying-it-50c750ef0c4e
+- For the stack http://truffleframework.com/tutorials/pet-shop
