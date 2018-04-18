@@ -23,7 +23,11 @@ function getRandomInt(max) {
 
 console.log("Connecting to " + rpcAddress);
 web3 = new Web3(new Web3.providers.HttpProvider(rpcAddress));
-
+// Import our contract artifacts and turn them into usable abstractions.
+import artifacts from './build/contracts/ERC721Planet.json';
+var Planet = artifacts.require("ERC721Planet");
+console.log(Planet);
+/*
 contractAddress = fs.readFileSync('last_contract_address.txt').toString();
 abiDefinition = fs.readFileSync('ERC721Planet-abi.txt').toString();
 console.log(contractAddress);
@@ -34,4 +38,5 @@ contract = myContract.at(contractAddress)
 //listPlanets();
 contract.createPlanet(1, "Earth", "Planet blue", "ipfsaddress", 10, {from: web3.eth.accounts[0], gas: 4700000});
 listPlanets();
+*/
 console.log("Done !");

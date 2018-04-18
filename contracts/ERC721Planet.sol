@@ -33,7 +33,7 @@ contract ERC721Planet is SimpleERC721 {
       uint planetPositionInList;
     }
     mapping (uint => Planet) planets;
-    uint[] private planetsList; // WARNING: private is still readable ?
+    uint[] public planetsList; // WARNING: private is still readable ?
 
     // the one who deployed the smart contract
     address public owner;

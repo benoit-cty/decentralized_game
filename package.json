@@ -7,6 +7,7 @@
     "test": "test"
   },
   "scripts": {
+    "dev": "lite-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
+    "lite-server": "^2.3.0",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
     "zeppelin-solidity": "1.8.0"
