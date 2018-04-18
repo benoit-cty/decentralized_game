@@ -1,7 +1,8 @@
-# decentralized_game
-A game for mid-term exam of The School.ai
+# Decentralized space game
 
-## Rules of the game
+A game for mid-term exam of https://www.theschool.ai/ by Siraj Raval.
+
+## Rules of the game
 
 Every gamers start from Earth and need to buy SpaceShip to explore other system.
 Or buy a Planet who has already been discovered.
