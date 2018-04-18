@@ -27,5 +27,8 @@
   "bugs": {
     "url": "https://github.com/trancept/decentralized_game/issues"
   },
-  "homepage": "https://github.com/trancept/decentralized_game#readme"
+  "homepage": "https://github.com/trancept/decentralized_game#readme",
+  "devDependencies": {
+    "webpack": "^4.6.0"
+  }
 }
