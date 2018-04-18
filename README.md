@@ -122,7 +122,7 @@ truffle exec tools/load_planet_to_contract.js
 npm run dev
 ```
 
-## Inspiration
+## Inspiration
 
 - For ERC721 : https://hackernoon.com/from-a-to-z-making-the-mvp-of-a-real-dapp-on-ethereum-and-deploying-it-50c750ef0c4e
 - For the stack http://truffleframework.com/tutorials/pet-shop
