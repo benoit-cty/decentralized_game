@@ -138,22 +138,14 @@ module.exports = function(callback) {
 
 }
 /*
-
-
-
-
-
-
 var Web3 = require('web3')
 var fs = require('fs');
 const rpcAddress = "http://localhost:8545";
 const ganacheAccounts = 50;
 var candidates = [];
-
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
-
 console.log("Connecting to " + rpcAddress);
 web3 = new Web3(new Web3.providers.HttpProvider(rpcAddress));
 // Import our contract artifacts and turn them into usable abstractions.
@@ -161,3 +153,29 @@ import artifacts from './build/contracts/ERC721Planet.json';
 var Planet = artifacts.require("ERC721Planet");
 console.log(Planet);
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
