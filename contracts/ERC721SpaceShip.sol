@@ -20,7 +20,7 @@ contract ERC721SpaceShip is SimpleERC721 {
     struct SpaceShip {
       //uint id;
       bytes32 name;
-      string description;
+      string typeOfShip;
       bytes32 ipfs;
       address owner;
       // address discoveredBy;
@@ -94,8 +94,8 @@ contract ERC721SpaceShip is SimpleERC721 {
     function getSpaceShipCount() public constant returns(uint count) {
       return spaceshipsList.length;
     }
-    function getSpaceShip(uint _tokenId) public constant returns( bytes32 _name, string _description, bytes32 _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity){
-      return (spaceships[_tokenId].name, spaceships[_tokenId].description, spaceships[_tokenId].ipfs, spaceships[_tokenId].price, spaceships[_tokenId].extractCapacity, spaceships[_tokenId].storageCapacity);
+    function getSpaceShip(uint _tokenId) public constant returns( bytes32 _name, string _typeOfShip, bytes32 _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity){
+      return (spaceships[_tokenId].name, spaceships[_tokenId].typeOfShip, spaceships[_tokenId].ipfs, spaceships[_tokenId].price, spaceships[_tokenId].extractCapacity, spaceships[_tokenId].storageCapacity);
     }
 
     // -----------------------------------------------------------------------------------------------------------
@@ -116,13 +116,13 @@ contract ERC721SpaceShip is SimpleERC721 {
     }
 */
     /// @dev Create a SpaceShip
-    function createSpaceShip(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity) public
+    function createSpaceShip(uint _tokenId, bytes32 _name, string _typeOfShip, bytes32 _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity) public
     {
         if(msg.sender != owner) revert();
         // TODO: Check if already exist ?
 
         spaceships[_tokenId].price = _price;
-        spaceships[_tokenId].description = _description;
+        spaceships[_tokenId].typeOfShip = _typeOfShip;
         spaceships[_tokenId].name = _name;
         spaceships[_tokenId].ipfs = _ipfs;
         spaceships[_tokenId].extractCapacity = _extractCapacity;
