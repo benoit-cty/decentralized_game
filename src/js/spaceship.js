@@ -68,7 +68,7 @@ App = {
   updateSpaceShip: function(spaceships, account) {
     var spaceshipInstance;
 
-    App.contracts.Spaceship.deployed().then(function(instance) {
+    App.contracts.SpaceShip.deployed().then(function(instance) {
       spaceshipInstance = instance;
 
       return spaceshipInstance.getSpaceShipCount();
