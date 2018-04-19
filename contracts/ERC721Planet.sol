@@ -21,7 +21,7 @@ contract ERC721Planet is SimpleERC721 {
       //uint id;
       bytes32 name;
       string description;
-      bytes32 ipfs;
+      string ipfs;
       address owner;
       address discoveredBy;
       uint x;
@@ -47,7 +47,7 @@ contract ERC721Planet is SimpleERC721 {
     // ------------------------------------------------- Constructor ---------------------------------------------
     // -----------------------------------------------------------------------------------------------------------
 
-    function ERC721Planet() public {
+    function constructor() public {
         owner = msg.sender;
     }
 
@@ -91,8 +91,12 @@ contract ERC721Planet is SimpleERC721 {
     function getPlanetCount() public constant returns(uint count) {
       return planetsList.length;
     }
-    function getPlanet(uint _tokenId) public constant returns( bytes32 _name, string _description, bytes32 _ipfs, uint _price){
-      return (planets[_tokenId].name, planets[_tokenId].description, planets[_tokenId].ipfs, planets[_tokenId].price);
+    function getPlanet(uint _tokenId) public constant returns( bytes32 _name, string _description, string _ipfs, uint _price){
+      if(planetExist(_tokenId)){
+        return (planets[_tokenId].name, planets[_tokenId].description, planets[_tokenId].ipfs, planets[_tokenId].price);
+      }else{
+        return ("dont_exist", "dont_exist", "dont_exist", 0);
+      }
     }
 
     function planetExist(uint _tokenId) public constant returns(bool isIndeed) {
@@ -117,10 +121,10 @@ contract ERC721Planet is SimpleERC721 {
     }
 */
     /// @dev Create a Planet
-    function createPlanet(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price) public
+    function createPlanet(uint _tokenId, bytes32 _name, string _description, string _ipfs, uint _price) public
     {
-        if(msg.sender != owner) revert();
-        if(planetExist(_tokenId)) revert();
+        //if(msg.sender != owner) revert(); //TODO: fix it !
+        //if(planetExist(_tokenId)) revert(); //TODO: fix it !
         planets[_tokenId].price = _price;
         planets[_tokenId].description = _description;
         planets[_tokenId].name = _name;
@@ -128,10 +132,11 @@ contract ERC721Planet is SimpleERC721 {
         //planets[_tokenId].owner =
         //planets[_tokenId].
         planets[_tokenId].planetPositionInList = planetsList.push(_tokenId) - 1;
+
     }
 
     /// @dev Update a Planet
-    function updatePlanet(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price) public
+    function updatePlanet(uint _tokenId, bytes32 _name, string _description, string _ipfs, uint _price) public
     {
         if(!planetExist(_tokenId)) revert();
         //TODO: Check who can update it other than owner of the contract ?
@@ -141,6 +146,21 @@ contract ERC721Planet is SimpleERC721 {
         planets[_tokenId].name = _name;
         planets[_tokenId].ipfs = _ipfs;
     }
+    /// @dev Delete a Planet
+    function deletePlanet(uint _tokenId) public
+    {
+        //if(msg.sender != owner) revert(); // fix it
+        if(planetExist(_tokenId)){
+          uint rowToDelete = planets[_tokenId].planetPositionInList;
+          uint keyToMove   = planetsList[planetsList.length - 1];
+          planetsList[rowToDelete] = keyToMove;
+          planets[keyToMove].planetPositionInList = rowToDelete;
+          planetsList.length--;
+          //planets[_tokenId].planetPositionInList = planetsList.push(_tokenId) - 1;
+          delete planets[_tokenId];
+        }
+    }
+
     /// @dev withdraw ether off the contract
     function withdraw() public
     {

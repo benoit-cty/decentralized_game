@@ -1,5 +1,6 @@
 var Planet = artifacts.require("ERC721Planet");
-
+//var Promise = require("promise");
+var fs = require('fs');
 var contract;
 
 function listPlanets(){
@@ -15,6 +16,39 @@ function listPlanets(){
   }
 }
 
+
+function readLines(input) {
+  return new Promise(function(resolve, reject) {
+    var remaining = '';
+
+    input.on('data', function(data) {
+      remaining += data;
+      var index = remaining.indexOf('\n');
+      while (index > -1) {
+        var line = remaining.substring(0, index);
+        remaining = remaining.substring(index + 1);
+        //console.log(line);
+        line = line.split(' ')[1]
+        // console.log(line);
+        ipfs.push(line);
+        index = remaining.indexOf('\n');
+      }
+    });
+
+    input.on('end', function() {
+      if (remaining.length > 0) {
+        line = remaining.split(' ')[1]
+        //ipfs.push(line); // Don't get last line, it is the directory
+      }
+      console.log("end file");
+
+      return resolve(ipfs);
+    }); // end on
+  }); // end Promise
+}
+
+
+var ipfs = [];
 
 module.exports = function(callback) {
 
@@ -50,29 +84,35 @@ module.exports = function(callback) {
           // Load planets json
           var planetsJSON = require('./planets0-100.json');
           //console.log(planetsJSON);
-          console.log(planetsJSON.length);
-          for (i = 0; i < planetsJSON.length; i ++) {
-            console.log(planetsJSON[i].name);
-            var description = planetsJSON[i].description;
-            var name = planetsJSON[i].name;
-            instance.createPlanet(i, name, description, "ipfsaddress", "100", {from: accounts[0]}).catch(function(err) {
-              console.log("ERROR creating planet " + i + " : " + err.message);
-            });
-          }
-
-
-
-            // createPlanet(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price) public
-            return instance.createPlanet(1, "PName", "PDesc", "ipfsaddress", "100", {from: accounts[0]}).then(
-              function() {
-                contract=instance;
-                console.log(instance.getPlanetCount.call());
-                listPlanets();
-          })
+          //console.log(planetsJSON.length);
+          var input = fs.createReadStream('./tools/planets-ipfs.txt');
+          readLines(input).then(function(ipfs) {
+              //console.log("ipfs.length=" + ipfs.length);
+              for (i = 0; i < planetsJSON.length; i ++) { // planetsJSON.length
+                //console.log(planetsJSON[i].name);
+                var description = planetsJSON[i].description;
+                var name = planetsJSON[i].name;
+                //console.log("ipfs.length=" + ipfs.length);
+                if(i > ipfs.length){
+                  ipfsaddress = ipfs[ipfs.length-1];
+                }else{
+                  ipfsaddress = ipfs[i];
+                }
+                console.log("planet =" + name);
+              //  instance.deletePlanet(i, {from: accounts[0]}).then(function() {
+                    instance.createPlanet(i, name, description, ipfsaddress, "100", {from: accounts[0]}).then(function() {
+                      console.log("Planet created.");
+                    }).catch(
+                      function(err) {
+                        console.log("ERROR creating planet : " + err.message);
+                    })
+              //  }); // end deletePlanet
+              }; // end for loop
+          }) // end readLines
         }).catch(function(err) {
-          console.log("ERROR : " + err.message);
-        });
-      });
+          console.log("ERROR getAccounts : " + err.message);
+        }); // end catch
+      }); // end getAccounts
 
 
 
