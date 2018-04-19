@@ -94,6 +94,7 @@ contract ERC721SpaceShip is SimpleERC721 {
     function getSpaceShipCount() public constant returns(uint count) {
       return spaceshipsList.length;
     }
+    //constant au lieu de view
     function getSpaceShip(uint _tokenId) public constant returns( bytes32 _name, string _typeOfShip, bytes32 _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity){
       return (spaceships[_tokenId].name, spaceships[_tokenId].typeOfShip, spaceships[_tokenId].ipfs, spaceships[_tokenId].price, spaceships[_tokenId].extractCapacity, spaceships[_tokenId].storageCapacity);
     }
