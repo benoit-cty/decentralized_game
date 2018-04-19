@@ -14,7 +14,8 @@ App = {
       App.web3Provider = web3.currentProvider;
     } else {
       // If no injected web3 instance is detected, fall back to Ganache
-      App.web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+      App.web3Provider = new Web3.providers.HttpProvider('http://127.0.0.1:8545');
+      // avant c'était http://localhost:8545
     }
     web3 = new Web3(App.web3Provider);
 
@@ -77,11 +78,14 @@ App = {
       App.listSpaceShips(spaceshipInstance, spaceships);
       console.log("msg="+msg);
       $('#spaceships-count').html(msg);
-      /*for (i = 0; i < planets; i++) {
-        if (planets[i] !== '0x0000000000000000000000000000000000000000') {
-          $('.panel-planet').eq(i).find('button').text('Success').attr('disabled', true);
-        }
-      }*/
+      //j'ai uncomment ça car c'est indiqué dans le guide pour petshop
+      // for (i = 0; i < spaceships; i++) {
+      //   if (spaceships[i] !== '0x0000000000000000000000000000000000000000') {
+      //     $('.panel-spaceship').eq(i).find('button').text('Success').attr('disabled', true);
+      //   }
+      // }
+      // j'ai uncomment ça car c'est indiqué dans le guide pour petshop
+      //'0x0000000000000000000000000000000000000000'
     }).catch(function(err) {
       console.log(err.message);
     });
@@ -103,7 +107,7 @@ App = {
         spaceshipInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return spaceshipInstance.buySpaceShip(petId, {from: account});
+        return spaceshipInstance.buySpaceShip(spaceshipId, {from: account});
       }).then(function(result) {
         return App.updateSpaceShip();
       }).catch(function(err) {
