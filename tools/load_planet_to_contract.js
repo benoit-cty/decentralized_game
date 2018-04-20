@@ -47,7 +47,11 @@ function readLines(input) {
   }); // end Promise
 }
 
-
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
 var ipfs = [];
 
 module.exports = function(callback) {
@@ -92,6 +96,7 @@ module.exports = function(callback) {
                 //console.log(planetsJSON[i].name);
                 var description = planetsJSON[i].description;
                 var name = planetsJSON[i].name;
+                var price = getRandomInt(100, 1000); // 10000000000 Mwei = 0.01 ETH
                 //console.log("ipfs.length=" + ipfs.length);
                 if(i > ipfs.length){
                   ipfsaddress = ipfs[ipfs.length-1];
@@ -100,7 +105,7 @@ module.exports = function(callback) {
                 }
                 console.log("planet =" + name);
               //  instance.deletePlanet(i, {from: accounts[0]}).then(function() {
-                    instance.createPlanet(i, name, description, ipfsaddress, "100", {from: accounts[0]}).then(function() {
+                    instance.createPlanet(i, name, description, ipfsaddress, price, {from: accounts[0]}).then(function() {
                       console.log("Planet created.");
                     }).catch(
                       function(err) {
@@ -153,29 +158,3 @@ import artifacts from './build/contracts/ERC721Planet.json';
 var Planet = artifacts.require("ERC721Planet");
 console.log(Planet);
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

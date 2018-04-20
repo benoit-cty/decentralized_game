@@ -1,3 +1,9 @@
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 App = {
   web3Provider: null,
   contracts: {},
@@ -54,9 +60,16 @@ App = {
       console.log("planetInstance.getPlanet(planetID):");
       planetInstance.getPlanet(planetID).then(function(planet) {
         //console.log(planet);
-        console.log(planetID + " - " + web3.toAscii(planet[0]) + " - "  + planet[1] + " - "  + planet[3] + " - "  + planet[4]);
+        //console.log(planetID + " - " + web3.toAscii(planet[0]) + " - "  + planet[1] + " - "  + planet[3] + " - "  + planet[4]);
+        var price = planet[3] * 1000 * 1000 * 1000;
         planetTemplate.find('.panel-title').text(web3.toAscii(planet[0]));
         planetTemplate.find('.planet-desc').text(planet[1]);
+        planetTemplate.find('.planet-uranium').text(getRandomInt(100, 1000));
+        planetTemplate.find('.planet-gold').text(getRandomInt(100, 1000));
+        planetTemplate.find('.planet-aluminium').text(getRandomInt(100, 1000));
+        planetTemplate.find('.planet-copper').text(getRandomInt(100, 1000));
+        planetTemplate.find('.planet-price').text(price);
+        planetTemplate.find('.planet-location').text(getRandomInt(100, 1000));
         planetTemplate.find('img').attr('src', 'https://gateway.ipfs.io/ipfs/' + planet[2]);
         planetRow.append(planetTemplate.html());
       }).catch(function(err) {
