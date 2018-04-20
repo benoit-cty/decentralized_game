@@ -41,12 +41,88 @@
           <div class="panel-body">
             <img alt="IPFS image" data-src="holder.js/140x140" class="img-rounded img-center" style="width: 100%;" src="nowhere.jpg" data-holder-rendered="true">
             <br/><br/>
-            <strong>Type</strong>: <span class="spaceship-type">3</span><br/>
+              <strong class="text-center title-desc">Type</strong>
+            <span class="spaceship-type">Type</span><br/>
             <button class="btn btn-default btn-buy" type="button" data-id="0">Buy</button>
           </div>
         </div>
       </div>
     </div>
+
+    <style>
+
+      .panel-heading {
+        background-color: #F6555A !important;
+        color: white !important;
+        text-align: center;
+        letter-spacing: 1px;
+        font-weight: bolder;
+        border: none;
+        text-transform: uppercase;
+        font-family: 'Josefin Sans';
+        padding-top: 14px;
+        min-height: 61px;
+        font-size: 15px !important;
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .panel-title {
+        align-self: center;
+      }
+
+      .panel-body {
+        min-height: 200px;
+        padding: 0;
+      }
+
+      .title-desc {
+        padding-top: 7px;
+        display: block;
+        font-family: 'Roboto';
+        padding: 0 15px;
+      }
+
+      .spaceship-type {
+        padding-top: 7px;
+        display: block;
+        font-family: 'Roboto';
+        padding: 10px 15px;
+      }
+
+      .btn-buy {
+        background-color: white;
+        border: 2px solid #F6555A;
+        width: 80%;
+        margin-left: 5%;
+        height: 40px;
+        font-weight: bolder;
+        color: #F6555A;
+        margin-top: 20px;
+        letter-spacing: 4px;
+        position: absolute;
+        bottom: 40px;
+        text-transform: uppercase;
+      }
+
+      .btn-buy:hover {
+        background-color: #F6555A;
+        border: 2px solid #F6555A;
+        color: white;
+      }
+
+      .spaceship-type {
+
+      }
+
+      #spaceships-count {
+        margin-bottom: 50px;
+        font-weight: bolder;
+        font-size: 25px;
+        letter-spacing: 1px;
+      }
+
+    </style>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="js/jquery.min.js"></script>
