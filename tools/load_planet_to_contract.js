@@ -101,7 +101,7 @@ module.exports = function(callback) {
                 if(i > ipfs.length){
                   ipfsaddress = ipfs[ipfs.length-1];
                 }else{
-                  ipfsaddress = ipfs[i];
+                  ipfsaddress = ipfs[getRandomInt(0, ipfs.length-1)];
                 }
                 console.log("planet =" + name);
               //  instance.deletePlanet(i, {from: accounts[0]}).then(function() {

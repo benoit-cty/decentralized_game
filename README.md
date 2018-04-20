@@ -120,6 +120,7 @@ truffle compile
 truffle migrate
 truffle test
 truffle exec tools/load_planet_to_contract.js
+truffle exec tools/load_spaceship_to_contract.js
 npm run dev
 ```
 

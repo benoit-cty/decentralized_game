@@ -1,5 +1,6 @@
 var Spaceship = artifacts.require("ERC721SpaceShip");
 
+var fs = require('fs');
 var contract;
 
 function listSpaceShips(){
@@ -15,6 +16,42 @@ function listSpaceShips(){
   }
 }
 
+function readLines(input) {
+  return new Promise(function (resolve, reject) {
+    var remaining = '';
+
+    input.on('data', function (data) {
+      remaining += data;
+      var index = remaining.indexOf('\n');
+      while (index > -1) {
+        var line = remaining.substring(0, index);
+        remaining = remaining.substring(index + 1);
+        //console.log(line);
+        line = line.split(' ')[1]
+        // console.log(line);
+        ipfs.push(line);
+        index = remaining.indexOf('\n');
+      }
+    });
+
+    input.on('end', function () {
+      if (remaining.length > 0) {
+        line = remaining.split(' ')[1]
+        //ipfs.push(line); // Don't get last line, it is the directory
+      }
+      console.log("end file");
+
+      return resolve(ipfs);
+    }); // end on
+  }); // end Promise
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+var ipfs = [];
 
 module.exports = function(callback) {
 
@@ -52,27 +89,34 @@ module.exports = function(callback) {
           //console.log(planetsJSON);
           console.log("info should load here...");
           console.log(spaceshipsJSON.length);
-          for (i = 0; i < spaceshipsJSON.length; i ++) {
-            console.log(spaceshipsJSON[i].name);
-            var type = spaceshipsJSON[i].type;
-            var name = spaceshipsJSON[i].name;
-            instance.createSpaceShip(i, name, type, "ipfsaddress", "100", "50", "20", {from: accounts[0]}).catch(function(err) {
-              console.log("ERROR creating spaceship " + i + " : " + err.message);
-            });
-          }
+          var input = fs.createReadStream('./tools/spaceships-ipfs.txt');
+          readLines(input).then(function (ipfs) {
 
-
-
-            // createPlanet(uint _tokenId, bytes32 _name, string _description, bytes32 _ipfs, uint _price) public
-            return instance.createSpaceShip(1, "SSName", "SStypeOfShip", "ipfsaddress", "100", "50", "20", {from: accounts[0]}).then(
-              function() {
-                contract=instance;
-                console.log(instance.getSpaceShipCount.call());
-                listSpaceShips();
-                console.log("or here");
-          })
+              for (i = 0; i < spaceshipsJSON.length; i ++) {
+                // console.log(spaceshipsJSON[i].name);
+                var type = spaceshipsJSON[i].type;
+                var name = spaceshipsJSON[i].name;
+                var price = getRandomInt(10, 100); // 10000000000 Mwei = 0.01 ETH
+                if (i > ipfs.length) {
+                  ipfsaddress = ipfs[ipfs.length - 1];
+                } else {
+                  ipfsaddress = ipfs[getRandomInt(0, ipfs.length-1)];
+                }
+                var condition = spaceshipsJSON[i].condition;
+                var weapons = spaceshipsJSON[i].weapons;
+                var defence = spaceshipsJSON[i].defence;
+                console.log("ipfsaddress =" + ipfsaddress);
+                //  createSpaceShip(uint _tokenId, bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity) public
+                instance.createSpaceShip(i, name, type, ipfsaddress, price, getRandomInt(10, 100), getRandomInt(100, 1000), { from: accounts[0] }).then(function () { //condition, weapons, defence
+                  console.log("Spaceship created.");
+                }).catch(
+                  function(err) {
+                    console.log("ERROR creating spaceship " + i + " : " + err.message);
+                })
+              };
+            })
         }).catch(function(err) {
-          console.log("ERROR : " + err.message);
+          console.log("ERROR getAccounts : " + err.message);
         });
       });
 
@@ -112,9 +156,6 @@ const rpcAddress = "http://localhost:8545";
 const ganacheAccounts = 50;
 var candidates = [];
 
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
 
 console.log("Connecting to " + rpcAddress);
 web3 = new Web3(new Web3.providers.HttpProvider(rpcAddress));
@@ -123,4 +164,3 @@ import artifacts from './build/contracts/ERC721Planet.json';
 var Planet = artifacts.require("ERC721Planet");
 console.log(Planet);
 */
-
