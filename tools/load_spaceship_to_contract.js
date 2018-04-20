@@ -97,10 +97,10 @@ module.exports = function(callback) {
                 var type = spaceshipsJSON[i].type;
                 var name = spaceshipsJSON[i].name;
                 var price = getRandomInt(10, 100); // 10000000000 Mwei = 0.01 ETH
-                if (i > ipfs.length) {
-                  ipfsaddress = ipfs[ipfs.length - 1];
-                } else {
+                if (i >= ipfs.length) {
                   ipfsaddress = ipfs[getRandomInt(0, ipfs.length-1)];
+                } else {
+                  ipfsaddress = ipfs[i];
                 }
                 var condition = spaceshipsJSON[i].condition;
                 var weapons = spaceshipsJSON[i].weapons;

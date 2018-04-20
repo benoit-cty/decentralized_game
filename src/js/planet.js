@@ -44,7 +44,7 @@ App = {
   },
 
   bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
+    $(document).on('click', '.btn-buy', App.handleBuy);
   },
 
   listPlanets: function (planetInstance, planetNumber){
@@ -61,16 +61,18 @@ App = {
       planetInstance.getPlanet(planetID).then(function(planet) {
         //console.log(planet);
         //console.log(planetID + " - " + web3.toAscii(planet[0]) + " - "  + planet[1] + " - "  + planet[3] + " - "  + planet[4]);
-        var price = planet[3] * 1000 * 1000 * 1000;
+        var price = planet[3];
         planetTemplate.find('.panel-title').text(web3.toAscii(planet[0]));
         planetTemplate.find('.planet-desc').text(planet[1]);
         planetTemplate.find('.planet-uranium').text(getRandomInt(100, 1000));
         planetTemplate.find('.planet-gold').text(getRandomInt(100, 1000));
         planetTemplate.find('.planet-aluminium').text(getRandomInt(100, 1000));
         planetTemplate.find('.planet-copper').text(getRandomInt(100, 1000));
-        planetTemplate.find('.planet-price').text(price);
+        planetTemplate.find('.planet-price').text(price * 1000 * 1000 * 1000);
         planetTemplate.find('.planet-location').text(getRandomInt(100, 1000));
         planetTemplate.find('img').attr('src', 'https://gateway.ipfs.io/ipfs/' + planet[2]);
+        planetTemplate.find('.btn-buy').attr('data-price', price);
+        planetTemplate.find('.btn-buy').attr('data-id', planetID);
         planetRow.append(planetTemplate.html());
       }).catch(function(err) {
         console.log('ERROR - listPlanets : ' + err.message);
@@ -86,7 +88,7 @@ App = {
 
       return planetInstance.getPlanetCount();
     }).then(function(planets) {
-      var msg = planets + " ";
+      var msg = planets + " " + planetInstance.address;
       App.listPlanets(planetInstance, planets);
       console.log("msg="+msg);
       $('#planets-count').html(msg);
@@ -103,6 +105,7 @@ App = {
   handleBuy: function(event) {
     event.preventDefault();
     var planetId = parseInt($(event.target).data('id'));
+    var price = parseInt($(event.target).data('price'));
     var planetInstance;
 
     web3.eth.getAccounts(function(error, accounts) {
@@ -116,7 +119,7 @@ App = {
         planetInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return planetInstance.buyPlanet(petId, {from: account});
+        return planetInstance.buyPlanet(planetId, {from: account, to : planetInstance.address, gas: 1000000, value:web3.toWei(price, "szabo")});
       }).then(function(result) {
         return App.updatePlanet();
       }).catch(function(err) {

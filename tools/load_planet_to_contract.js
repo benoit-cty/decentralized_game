@@ -67,16 +67,6 @@ module.exports = function(callback) {
 
 
 
-      Planet.deployed().then(function(instance) {
-        contract=instance;
-
-        return instance.getPlanetCount.call();
-      }).then(function(balance) {
-        console.log("value = " + balance.valueOf() );
-      });
-
-
-
       web3.eth.getAccounts(function(error, accounts) {
         if (error) {
           console.log(error);
@@ -85,6 +75,7 @@ module.exports = function(callback) {
         var account = accounts[0];
 
         Planet.deployed().then(function(instance) {
+          contract=instance;
           // Load planets json
           var planetsJSON = require('./planets0-100.json');
           //console.log(planetsJSON);
@@ -96,15 +87,15 @@ module.exports = function(callback) {
                 //console.log(planetsJSON[i].name);
                 var description = planetsJSON[i].description;
                 var name = planetsJSON[i].name;
-                var price = getRandomInt(100, 1000); // 10000000000 Mwei = 0.01 ETH
+                var price = getRandomInt(100, 1000); // 10000000000 Mwei = 0.01 ETH // https://etherconverter.online/
                 //console.log("ipfs.length=" + ipfs.length);
-                if(i > ipfs.length){
-                  ipfsaddress = ipfs[ipfs.length-1];
-                }else{
+                if(i >= ipfs.length){
                   ipfsaddress = ipfs[getRandomInt(0, ipfs.length-1)];
+                }else{
+                  ipfsaddress = ipfs[i];
                 }
                 console.log("planet =" + name);
-              //  instance.deletePlanet(i, {from: accounts[0]}).then(function() {
+                //instance.deletePlanet(i, {from: accounts[0]}).then(function() {
                     instance.createPlanet(i, name, description, ipfsaddress, price, {from: accounts[0]}).then(function() {
                       console.log("Planet created.");
                     }).catch(
@@ -114,6 +105,10 @@ module.exports = function(callback) {
               //  }); // end deletePlanet
               }; // end for loop
           }) // end readLines
+        }).then(function() {
+          return contract.getPlanetCount();
+        }).then(function(count) {
+          console.log("Planet number = " + count );
         }).catch(function(err) {
           console.log("ERROR getAccounts : " + err.message);
         }); // end catch

@@ -101,7 +101,11 @@ contract ERC721Planet is SimpleERC721 {
 
     function planetExist(uint _tokenId) public constant returns(bool isIndeed) {
       if(planetsList.length == 0) return false;
-      return (planetsList[planets[_tokenId].planetPositionInList] == _tokenId);
+      if(planetsList[planets[_tokenId].planetPositionInList] == _tokenId){
+        return true;
+      }else{
+        return false;
+      }
     }
     // -----------------------------------------------------------------------------------------------------------
     // --------------------------------------------- Core Public functions ---------------------------------------
@@ -123,8 +127,11 @@ contract ERC721Planet is SimpleERC721 {
     /// @dev Create a Planet
     function createPlanet(uint _tokenId, bytes32 _name, string _description, string _ipfs, uint _price) public
     {
-        //if(msg.sender != owner) revert(); //TODO: fix it !
-        //if(planetExist(_tokenId)) revert(); //TODO: fix it !
+        if(msg.sender != owner) revert(); //TODO: fix it !
+        if(planetExist(_tokenId)) revert(); //TODO: fix it !
+        // Set the ownership to creator
+        _setTokenOwner(_tokenId, msg.sender);
+        _addTokenToOwnersList(msg.sender, _tokenId);
         planets[_tokenId].price = _price;
         planets[_tokenId].description = _description;
         planets[_tokenId].name = _name;
@@ -149,7 +156,7 @@ contract ERC721Planet is SimpleERC721 {
     /// @dev Delete a Planet
     function deletePlanet(uint _tokenId) public
     {
-        //if(msg.sender != owner) revert(); // fix it
+        if(msg.sender != owner) revert(); // fix it
         if(planetExist(_tokenId)){
           uint rowToDelete = planets[_tokenId].planetPositionInList;
           uint keyToMove   = planetsList[planetsList.length - 1];
@@ -181,14 +188,19 @@ contract ERC721Planet is SimpleERC721 {
 
     /// @dev buying token from someone
     function buyPlanet (uint _tokenId) payable public onlyExtantToken (_tokenId) isUpForSale (_tokenId) onlyNotOwnerOfToken (_tokenId) {
-        require(msg.value == planets[_tokenId].price);
+         if(msg.value > planets[_tokenId].price) // szabo to Wei : * 1000000000000
+         {
 
-        planets[_tokenId].price = 0;
-        BalanceOfEther[ownerOf(_tokenId)] += msg.value;
+                   planets[_tokenId].price = 0;
+                   BalanceOfEther[ownerOf(_tokenId)] += msg.value;
 
-        _clearApprovalAndTransfer(ownerOf(_tokenId), msg.sender, _tokenId);
+                   _clearApprovalAndTransfer(ownerOf(_tokenId), msg.sender, _tokenId);
 
-        emit EmitBought(_tokenId, msg.value, msg.sender);
+                   emit EmitBought(_tokenId, msg.value, msg.sender);
+         }else{
+           revert();
+         }
+
     }
 
     /// @dev removing a sale proposition
