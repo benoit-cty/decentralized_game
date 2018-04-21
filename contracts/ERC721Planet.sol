@@ -91,11 +91,13 @@ contract ERC721Planet is SimpleERC721 {
     function getPlanetCount() public constant returns(uint count) {
       return planetsList.length;
     }
-    function getPlanet(uint _tokenId) public constant returns( bytes32 _name, string _description, string _ipfs, uint _price){
+
+
+    function getPlanet(uint _tokenId) public constant returns( bytes32 _name, string _description, string _ipfs, uint _price, address _owner){
       if(planetExist(_tokenId)){
-        return (planets[_tokenId].name, planets[_tokenId].description, planets[_tokenId].ipfs, planets[_tokenId].price);
+        return (planets[_tokenId].name, planets[_tokenId].description, planets[_tokenId].ipfs, planets[_tokenId].price, ownerOf(_tokenId));
       }else{
-        return ("dont_exist", "dont_exist", "dont_exist", 0);
+        return ("dont_exist", "dont_exist", "dont_exist", 0, 0);
       }
     }
 

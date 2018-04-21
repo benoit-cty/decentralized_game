@@ -59,11 +59,13 @@ App = {
       //planets.push(planetID);
       console.log("planetInstance.getPlanet(planetID):");
       planetInstance.getPlanet(planetID).then(function(planet) {
+        // getPlanet(uint _tokenId) public constant returns( bytes32 _name, string _description, string _ipfs, uint _price, address _owner){
         //console.log(planet);
         //console.log(planetID + " - " + web3.toAscii(planet[0]) + " - "  + planet[1] + " - "  + planet[3] + " - "  + planet[4]);
         var price = planet[3];
         planetTemplate.find('.panel-title').text(web3.toAscii(planet[0]));
         planetTemplate.find('.planet-desc').text(planet[1]);
+        planetTemplate.find('.planet-owner').text(planet[4]);
         planetTemplate.find('.planet-uranium').text(getRandomInt(100, 1000));
         planetTemplate.find('.planet-gold').text(getRandomInt(100, 1000));
         planetTemplate.find('.planet-aluminium').text(getRandomInt(100, 1000));
