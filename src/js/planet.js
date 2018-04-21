@@ -75,6 +75,10 @@ App = {
         planetTemplate.find('img').attr('src', 'https://gateway.ipfs.io/ipfs/' + planet[2]);
         planetTemplate.find('.btn-buy').attr('data-price', price);
         planetTemplate.find('.btn-buy').attr('data-id', planetID);
+        if(price = 0){
+          // TODO: fix it
+          planetTemplate.find('.btn-buy').attr('disabled', true);
+        }
         planetRow.append(planetTemplate.html());
       }).catch(function(err) {
         console.log('ERROR - listPlanets : ' + err.message);
@@ -90,7 +94,7 @@ App = {
 
       return planetInstance.getPlanetCount();
     }).then(function(planets) {
-      var msg = planets + " " + planetInstance.address;
+      var msg = planets + " contract address : " + planetInstance.address;
       App.listPlanets(planetInstance, planets);
       console.log("msg="+msg);
       $('#planets-count').html(msg);
@@ -109,21 +113,36 @@ App = {
     var planetId = parseInt($(event.target).data('id'));
     var price = parseInt($(event.target).data('price'));
     var planetInstance;
-
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
         console.log(error);
       }
-
       var account = accounts[0];
-
       App.contracts.Planet.deployed().then(function(instance) {
         planetInstance = instance;
-
         // Execute adopt as a transaction by sending account
         return planetInstance.buyPlanet(planetId, {from: account, to : planetInstance.address, gas: 1000000, value:web3.toWei(price, "szabo")});
       }).then(function(result) {
-        return App.updatePlanet();
+          // result is an object with the following values:
+          //
+          // result.tx      => transaction hash, string
+          // result.logs    => array of decoded events that were triggered within this transaction
+          // result.receipt => transaction receipt object, which includes gas used
+
+          // We can loop through result.logs to see if we triggered the Transfer event.
+          var success = false
+          for (var i = 0; i < result.logs.length; i++) {
+            var log = result.logs[i];
+            if (log.event == "EmitBought") {
+              success =true;
+              // TODO: Only update the specific planet
+              return App.updatePlanet();
+              // We found the event!
+              break;
+            }
+          }
+
+
       }).catch(function(err) {
         console.log(err.message);
       });

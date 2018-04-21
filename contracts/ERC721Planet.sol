@@ -190,14 +190,11 @@ contract ERC721Planet is SimpleERC721 {
 
     /// @dev buying token from someone
     function buyPlanet (uint _tokenId) payable public onlyExtantToken (_tokenId) isUpForSale (_tokenId) onlyNotOwnerOfToken (_tokenId) {
-         if(msg.value > planets[_tokenId].price) // szabo to Wei : * 1000000000000
+         if(msg.value > planets[_tokenId].price) // fix it szabo to Wei : * 1000000000000
          {
-
                    planets[_tokenId].price = 0;
                    BalanceOfEther[ownerOf(_tokenId)] += msg.value;
-
                    _clearApprovalAndTransfer(ownerOf(_tokenId), msg.sender, _tokenId);
-
                    emit EmitBought(_tokenId, msg.value, msg.sender);
          }else{
            revert();
