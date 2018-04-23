@@ -1,7 +1,7 @@
 package-lock.json
 gfx/
 # Truffle
-build/
+#build/
 # Logs
 logs
 *.log
