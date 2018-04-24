@@ -2,6 +2,8 @@
 
 A game for mid-term exam of https://www.theschool.ai/ by Siraj Raval.
 
+Play it on http://unbouncepages.com/exoloop/
+
 ## Rules of the game
 
 Every gamers start from Earth and need to buy SpaceShip to explore other system.

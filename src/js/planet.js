@@ -130,7 +130,7 @@ App = {
           // result.receipt => transaction receipt object, which includes gas used
 
           // We can loop through result.logs to see if we triggered the Transfer event.
-          var success = false
+          /*var success = false
           for (var i = 0; i < result.logs.length; i++) {
             var log = result.logs[i];
             if (log.event == "EmitBought") {
@@ -140,7 +140,7 @@ App = {
               // We found the event!
               break;
             }
-          }
+          }*/
 
 
       }).catch(function(err) {

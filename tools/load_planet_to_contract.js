@@ -47,6 +47,31 @@ function readLines(input) {
   }); // end Promise
 }
 
+function createPlanet(contract, planetID, name, description, ipfsaddress, price, account) {
+  var planetID = planetID;
+  //  return new Promise(function(resolve, reject) {
+
+    contract.planetExist(planetID, {from: account}).then(function(planetExist) {
+      if(planetExist){
+        console.log("Planet " + planetID + " already exist.");
+      }else{
+        contract.createPlanet(planetID, name, description, ipfsaddress, price, {from: account}).then(function() {
+        console.log("Planet " +planetID+ " created.");
+        //return resolve(planetID);
+        }).catch(
+          function(err) {
+            console.log("ERROR creating planet " + planetID + ": " + err.message);
+            //return reject(err);
+        })
+      } // fin if
+    }).catch(function(err) {console.log("ERROR testing planet : " + planetID + ":" + err.message);
+  //return reject(err);
+  }); // end deletePlanet
+
+  //  }); // end Promise
+}
+
+
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -83,7 +108,7 @@ module.exports = function(callback) {
           var input = fs.createReadStream('./tools/planets-ipfs.txt');
           readLines(input).then(function(ipfs) {
               //console.log("ipfs.length=" + ipfs.length);
-              for (i = 0; i < planetsJSON.length; i ++) { // planetsJSON.length
+              for (var i = 0; i < planetsJSON.length; i ++) { // planetsJSON.length
                 //console.log(planetsJSON[i].name);
                 var description = planetsJSON[i].description;
                 var name = planetsJSON[i].name;
@@ -94,15 +119,18 @@ module.exports = function(callback) {
                 }else{
                   ipfsaddress = ipfs[i];
                 }
-                console.log("planet =" + name);
+                console.log("planet : " + name);
+                planetExist = false;
                 //instance.deletePlanet(i, {from: accounts[0]}).then(function() {
-                    instance.createPlanet(i, name, description, ipfsaddress, price, {from: accounts[0]}).then(function() {
-                      console.log("Planet created.");
-                    }).catch(
-                      function(err) {
-                        console.log("ERROR creating planet : " + err.message);
-                    })
-              //  }); // end deletePlanet
+                createPlanet(instance, i, name, description, ipfsaddress, price, account);
+                // .then(function(planetID) {
+                //   console.log("Planet " +planetID+ " created.");
+                //
+                // }).catch(
+                //   function(err) {
+                //     console.log("ERROR creating planet "+planetID+" : " + err.message);
+                //
+                // })
               }; // end for loop
           }) // end readLines
         }).then(function() {
