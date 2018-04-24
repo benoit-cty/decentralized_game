@@ -49,15 +49,18 @@ App = {
     console.log("getSpaceShips =" + count);
     var spaceshipRow = $('#spaceshipsRow');
     var spaceshipTemplate = $('#spaceshipTemplate');
+    if(count > 50) count = 50;
     for (let spaceshipID = 0; spaceshipID < count; spaceshipID++) {
       //var planetID = planetInstance.planetsList[i];
       //planets.push(planetID);
       console.log("spaceshipInstance.getSpaceShip(spaceshipID):");
       spaceshipInstance.getSpaceShip(spaceshipID).then(function(spaceship) {
+        // getSpaceShip(uint _tokenId) public constant returns( bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity){
         //console.log(planet);
         //console.log(planetID + " - " + web3.toAscii(planet[0]) + " - "  + planet[1] + " - "  + planet[3] + " - "  + planet[4]);
         spaceshipTemplate.find('.panel-title').text(web3.toAscii(spaceship[0]));
         spaceshipTemplate.find('.spaceship-type').text(spaceship[1]);
+        spaceshipTemplate.find('img').attr('src', 'https://gateway.ipfs.io/ipfs/' + spaceship[2]);
         //planetTemplate.find('img').attr('src', data[i].picture);
         spaceshipRow.append(spaceshipTemplate.html());
       }).catch(function(err) {
