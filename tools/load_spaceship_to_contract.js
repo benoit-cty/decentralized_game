@@ -7,6 +7,7 @@ function listSpaceShips(){
   spaceships = [];
   console.log("getSpaceShips...");
   var count = contract.getSpaceShipCount();
+  if(count > 50) count = 5;
   for (let i = 0; i < count; i++) {
     var spaceshipID = contract.spaceshipsList(i);
     spaceships.push(candidateID);
@@ -92,7 +93,7 @@ module.exports = function(callback) {
           var input = fs.createReadStream('./tools/spaceships-ipfs.txt');
           readLines(input).then(function (ipfs) {
 
-              for (i = 0; i < spaceshipsJSON.length; i ++) {
+              for (i = 0; i < 50; i ++) {
                 // console.log(spaceshipsJSON[i].name);
                 var type = spaceshipsJSON[i].type;
                 var name = spaceshipsJSON[i].name;
