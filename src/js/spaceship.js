@@ -124,7 +124,7 @@ App = {
         spaceshipInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return spaceshipInstance.buySpaceShip(spaceshipId, {from: account, to : spaceshipInstance.address, gas: 4705179, value:web3.toWei(price, "szabo")});
+        return spaceshipInstance.buySpaceShip(spaceshipId, {from: account, to : spaceshipInstance.address, gas: 4005179, value:web3.toWei(price, "szabo")});
       }).then(function(result) {
         return App.updateSpaceShip();
       }).catch(function(err) {

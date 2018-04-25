@@ -115,6 +115,8 @@ contract ERC721SpaceShip is SimpleERC721 {
     {
         if(msg.sender != owner) revert();
         if(spaceshipExist(_tokenId)) revert();
+        _setTokenOwner(_tokenId, msg.sender);
+        _addTokenToOwnersList(msg.sender, _tokenId);
         spaceships[_tokenId].price = _price;
         spaceships[_tokenId].typeOfShip = _typeOfShip;
         spaceships[_tokenId].name = _name;
@@ -143,7 +145,7 @@ contract ERC721SpaceShip is SimpleERC721 {
 
     /// @dev buying token from someone
     function buySpaceShip (uint _tokenId) payable public onlyExtantToken (_tokenId) isUpForSale (_tokenId) onlyNotOwnerOfToken (_tokenId) {
-      if(msg.value > spaceships[_tokenId].price){
+      if(msg.value >= spaceships[_tokenId].price){
         spaceships[_tokenId].price = 0;
         BalanceOfEther[ownerOf(_tokenId)] += msg.value;
         _clearApprovalAndTransfer(ownerOf(_tokenId), msg.sender, _tokenId);
