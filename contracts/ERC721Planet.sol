@@ -129,8 +129,8 @@ contract ERC721Planet is SimpleERC721 {
     /// @dev Create a Planet
     function createPlanet(uint _tokenId, bytes32 _name, string _description, string _ipfs, uint _price) public
     {
-        if(msg.sender != owner) revert(); //TODO: fix it !
-        if(planetExist(_tokenId)) revert(); //TODO: fix it !
+        if(msg.sender != owner) revert();
+        if(planetExist(_tokenId)) revert();
         // Set the ownership to creator
         _setTokenOwner(_tokenId, msg.sender);
         _addTokenToOwnersList(msg.sender, _tokenId);

@@ -48,27 +48,19 @@ function readLines(input) {
 }
 
 function createPlanet(contract, planetID, name, description, ipfsaddress, price, account) {
-  var planetID = planetID;
-  //  return new Promise(function(resolve, reject) {
-
     contract.planetExist(planetID, {from: account}).then(function(planetExist) {
       if(planetExist){
         console.log("Planet " + planetID + " already exist.");
       }else{
         contract.createPlanet(planetID, name, description, ipfsaddress, price, {from: account}).then(function() {
         console.log("Planet " +planetID+ " created.");
-        //return resolve(planetID);
         }).catch(
           function(err) {
             console.log("ERROR creating planet " + planetID + ": " + err.message);
-            //return reject(err);
         })
       } // fin if
     }).catch(function(err) {console.log("ERROR testing planet : " + planetID + ":" + err.message);
-  //return reject(err);
   }); // end deletePlanet
-
-  //  }); // end Promise
 }
 
 
@@ -123,14 +115,6 @@ module.exports = function(callback) {
                 planetExist = false;
                 //instance.deletePlanet(i, {from: accounts[0]}).then(function() {
                 createPlanet(instance, i, name, description, ipfsaddress, price, account);
-                // .then(function(planetID) {
-                //   console.log("Planet " +planetID+ " created.");
-                //
-                // }).catch(
-                //   function(err) {
-                //     console.log("ERROR creating planet "+planetID+" : " + err.message);
-                //
-                // })
               }; // end for loop
           }) // end readLines
         }).then(function() {

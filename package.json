@@ -20,7 +20,6 @@
     "promise": "^8.0.1",
     "request": "^2.85.0",
     "request-promise": "^4.2.2",
-    "zeppelin-solidity": "1.8.0"
   },
   "repository": {
     "type": "git",

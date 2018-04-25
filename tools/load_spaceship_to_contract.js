@@ -2,20 +2,20 @@ var Spaceship = artifacts.require("ERC721SpaceShip");
 
 var fs = require('fs');
 var contract;
-
-function listSpaceShips(){
-  spaceships = [];
-  console.log("getSpaceShips...");
-  var count = contract.getSpaceShipCount();
-  if(count > 50) count = 5;
-  for (let i = 0; i < count; i++) {
-    var spaceshipID = contract.spaceshipsList(i);
-    spaceships.push(candidateID);
-    var spaceship = contract.getSpaceShip(spaceshipID);
-    var name = web3.toAscii(SpaceShip[1]);
-    console.log(spaceshipID + " - " + name + " - "  + spaceship[2] + " - "  + spaceship[3] + " - "  + spaceship[4]);
-  }
-}
+//
+// function listSpaceShips(){
+//   spaceships = [];
+//   console.log("getSpaceShips...");
+//   var count = contract.getSpaceShipCount();
+//   if(count > 50) count = 5;
+//   for (let i = 0; i < count; i++) {
+//     var spaceshipID = contract.spaceshipsList(i);
+//     spaceships.push(candidateID);
+//     var spaceship = contract.getSpaceShip(spaceshipID);
+//     var name = web3.toAscii(SpaceShip[1]);
+//     console.log(spaceshipID + " - " + name + " - "  + spaceship[2] + " - "  + spaceship[3] + " - "  + spaceship[4]);
+//   }
+// }
 
 function readLines(input) {
   return new Promise(function (resolve, reject) {
@@ -53,6 +53,25 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 var ipfs = [];
+
+
+function createSpaceShip(contract, shipID, name, type, ipfsaddress, price, account) {
+    contract.spaceshipExist(shipID, {from: account}).then(function(SpaceshipExist) {
+      if(SpaceshipExist){
+        console.log("Spaceship " + shipID + " already exist.");
+      }else{
+        //contract.createPlanet(planetID, name, description, ipfsaddress, price, {from: account}).then(function() {
+        contract.createSpaceShip(shipID, name, type, ipfsaddress, price, getRandomInt(10, 100), getRandomInt(100, 1000), { from: account }).then(function () { //condition, weapons, defence
+        console.log("Spaceship " +shipID+ " created.");
+        }).catch(
+          function(err) {
+            console.log("ERROR creating planet " + shipID + ": " + err.message);
+        })
+      } // fin if
+    }).catch(function(err) {console.log("ERROR testing ship : " + shipID + ":" + err.message);
+  }); // end deletePlanet
+}
+
 
 module.exports = function(callback) {
 
@@ -107,19 +126,20 @@ module.exports = function(callback) {
                 var weapons = spaceshipsJSON[i].weapons;
                 var defence = spaceshipsJSON[i].defence;
                 console.log("ipfsaddress =" + ipfsaddress);
+                createSpaceShip(instance, i, name, type, ipfsaddress, price, accounts[0]);
                 //  createSpaceShip(uint _tokenId, bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity) public
-                instance.createSpaceShip(i, name, type, ipfsaddress, price, getRandomInt(10, 100), getRandomInt(100, 1000), { from: accounts[0] }).then(function () { //condition, weapons, defence
-                  console.log("Spaceship created.");
-                }).catch(
-                  function(err) {
-                    console.log("ERROR creating spaceship " + i + " : " + err.message);
-                })
-              };
-            })
+                // instance.createSpaceShip(i, name, type, ipfsaddress, price, getRandomInt(10, 100), getRandomInt(100, 1000), { from: accounts[0] }).then(function () { //condition, weapons, defence
+                //   console.log("Spaceship created.");
+                // }).catch(
+                //   function(err) {
+                //     console.log("ERROR creating spaceship " + i + " : " + err.message);
+                // })
+              } // fin for
+          }) // fin readLines
         }).catch(function(err) {
           console.log("ERROR getAccounts : " + err.message);
-        });
-      });
+        }); // fin deployed
+      }); // Fin getAccounts
 
 
 

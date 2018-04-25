@@ -87,6 +87,14 @@ contract ERC721SpaceShip is SimpleERC721 {
         _;
     }
 
+    function spaceshipExist(uint _tokenId) public constant returns(bool isIndeed) {
+      if(spaceshipsList.length == 0) return false;
+      if(spaceshipsList[spaceships[_tokenId].spaceshipPositionInList] == _tokenId){
+        return true;
+      }else{
+        return false;
+      }
+    }
     // -----------------------------------------------------------------------------------------------------------
     // ------------------------------------------------ View functions -------------------------------------------
     // -----------------------------------------------------------------------------------------------------------
@@ -120,7 +128,7 @@ contract ERC721SpaceShip is SimpleERC721 {
     function createSpaceShip(uint _tokenId, bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity) public
     {
         if(msg.sender != owner) revert();
-        // TODO: Check if already exist ?
+        if(spaceshipExist(_tokenId)) revert();
 
         spaceships[_tokenId].price = _price;
         spaceships[_tokenId].typeOfShip = _typeOfShip;

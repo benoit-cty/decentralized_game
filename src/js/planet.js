@@ -112,6 +112,7 @@ App = {
     event.preventDefault();
     var planetId = parseInt($(event.target).data('id'));
     var price = parseInt($(event.target).data('price'));
+    console.log("Ask to buy " + planetId + " for " + price);
     var planetInstance;
     web3.eth.getAccounts(function(error, accounts) {
       if (error) {
@@ -121,8 +122,9 @@ App = {
       App.contracts.Planet.deployed().then(function(instance) {
         planetInstance = instance;
         // Execute adopt as a transaction by sending account
-        return planetInstance.buyPlanet(planetId, {from: account, to : planetInstance.address, gas: 1000000, value:web3.toWei(price, "szabo")});
+        planetInstance.buyPlanet(planetId, {from: account, to : planetInstance.address, gas: 1000000, value:web3.toWei(price, "szabo")});
       }).then(function(result) {
+        console.log("Buy done.");
           // result is an object with the following values:
           //
           // result.tx      => transaction hash, string
