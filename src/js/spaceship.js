@@ -1,3 +1,9 @@
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
 App = {
   web3Provider: null,
   contracts: {},
@@ -39,7 +45,7 @@ App = {
   },
 
   bindEvents: function() {
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
+    $(document).on('click', '.btn-buy', App.handleBuy);
   },
 
   listSpaceShips: function (spaceshipInstance, spaceshipNumber){
@@ -55,12 +61,18 @@ App = {
       //planets.push(planetID);
       console.log("spaceshipInstance.getSpaceShip(spaceshipID):");
       spaceshipInstance.getSpaceShip(spaceshipID).then(function(spaceship) {
-        // getSpaceShip(uint _tokenId) public constant returns( bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity){
+        // getSpaceShip(uint _tokenId) public constant returns( 0 bytes32 _name, 1 string _typeOfShip, 2 string _ipfs, 3 uint _price, 4 uint _extractCapacity, 5 uint _storageCapacity, 6 owner){
         //console.log(planet);
         //console.log(planetID + " - " + web3.toAscii(planet[0]) + " - "  + planet[1] + " - "  + planet[3] + " - "  + planet[4]);
         spaceshipTemplate.find('.panel-title').text(web3.toAscii(spaceship[0]));
         spaceshipTemplate.find('.spaceship-type').text(spaceship[1]);
+        spaceshipTemplate.find('.spaceship-passenger').text(spaceship[4]);
+        spaceshipTemplate.find('.spaceship-fret').text(spaceship[5]);
+        spaceshipTemplate.find('.spaceship-owner').text(getRandomInt(100, 1000));
+        spaceshipTemplate.find('.spaceship-price').text(spaceship[3] * 1000 * 1000);
         spaceshipTemplate.find('img').attr('src', 'https://gateway.ipfs.io/ipfs/' + spaceship[2]);
+        spaceshipTemplate.find('.btn-buy').attr('data-price', spaceship[3]);
+        spaceshipTemplate.find('.btn-buy').attr('data-id', spaceshipID);
         //planetTemplate.find('img').attr('src', data[i].picture);
         spaceshipRow.append(spaceshipTemplate.html());
       }).catch(function(err) {
@@ -97,6 +109,8 @@ App = {
   handleBuy: function(event) {
     event.preventDefault();
     var spaceshipId = parseInt($(event.target).data('id'));
+    var price = parseInt($(event.target).data('price'));
+    console.log("Ask to buy " + spaceshipId + " for " + price);
     var spaceshipInstance;
 
     web3.eth.getAccounts(function(error, accounts) {
@@ -110,7 +124,7 @@ App = {
         spaceshipInstance = instance;
 
         // Execute adopt as a transaction by sending account
-        return spaceshipInstance.buySpaceShip(spaceshipId, {from: account});
+        return spaceshipInstance.buySpaceShip(spaceshipId, {from: account, to : spaceshipInstance.address, gas: 4705179, value:web3.toWei(price, "szabo")});
       }).then(function(result) {
         return App.updateSpaceShip();
       }).catch(function(err) {

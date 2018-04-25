@@ -9,8 +9,6 @@ App = {
   contracts: {},
 
   init: function() {
-
-
     return App.initWeb3();
   },
 

@@ -103,41 +103,25 @@ contract ERC721SpaceShip is SimpleERC721 {
       return spaceshipsList.length;
     }
     //constant au lieu de view
-    function getSpaceShip(uint _tokenId) public constant returns( bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity){
-      return (spaceships[_tokenId].name, spaceships[_tokenId].typeOfShip, spaceships[_tokenId].ipfs, spaceships[_tokenId].price, spaceships[_tokenId].extractCapacity, spaceships[_tokenId].storageCapacity);
+    function getSpaceShip(uint _tokenId) public constant returns( bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity, address _ownerOf){
+      return (spaceships[_tokenId].name, spaceships[_tokenId].typeOfShip, spaceships[_tokenId].ipfs, spaceships[_tokenId].price, spaceships[_tokenId].extractCapacity, spaceships[_tokenId].storageCapacity, ownerOf(_tokenId));
     }
 
     // -----------------------------------------------------------------------------------------------------------
     // --------------------------------------------- Core Public functions ---------------------------------------
     // -----------------------------------------------------------------------------------------------------------
-
-    /// @dev Initial acquisition of the token
-/*    function initialBuySpaceShip (uint _tokenId) payable public onlyNonexistentToken (_tokenId) {
-        require(msg.value == spaceships[_tokenId].price); // 0.1 eth = 100 finney
-        require(_tokenId < 10000); // Limit to 10 000 spaceships
-
-        BalanceOfEther[owner] += msg.value;
-
-        _setTokenOwner(_tokenId, msg.sender);
-        _addTokenToOwnersList(msg.sender, _tokenId);
-
-        emit EmitBought(_tokenId, msg.value, msg.sender);
-    }
-*/
     /// @dev Create a SpaceShip
     function createSpaceShip(uint _tokenId, bytes32 _name, string _typeOfShip, string _ipfs, uint _price, uint _extractCapacity, uint _storageCapacity) public
     {
         if(msg.sender != owner) revert();
         if(spaceshipExist(_tokenId)) revert();
-
         spaceships[_tokenId].price = _price;
         spaceships[_tokenId].typeOfShip = _typeOfShip;
         spaceships[_tokenId].name = _name;
         spaceships[_tokenId].ipfs = _ipfs;
         spaceships[_tokenId].extractCapacity = _extractCapacity;
         spaceships[_tokenId].storageCapacity = _storageCapacity;
-        //spaceships[_tokenId].owner =
-        //spaceships[_tokenId].
+        spaceships[_tokenId].owner = msg.sender;
         spaceships[_tokenId].spaceshipPositionInList = spaceshipsList.push(_tokenId) - 1;
 
     }
@@ -153,22 +137,20 @@ contract ERC721SpaceShip is SimpleERC721 {
     /// @notice the _price is in Wei
     function sellSpaceShip (uint _tokenId, uint _price) public onlyExtantToken (_tokenId) onlyOwnerOfToken (_tokenId) isNotUpForSale(_tokenId) {
         require(_price > 0);
-
         spaceships[_tokenId].price = _price;
-
         emit EmitUpForSale(_tokenId, _price);
     }
 
     /// @dev buying token from someone
     function buySpaceShip (uint _tokenId) payable public onlyExtantToken (_tokenId) isUpForSale (_tokenId) onlyNotOwnerOfToken (_tokenId) {
-        require(msg.value == spaceships[_tokenId].price);
-
+      if(msg.value > spaceships[_tokenId].price){
         spaceships[_tokenId].price = 0;
         BalanceOfEther[ownerOf(_tokenId)] += msg.value;
-
         _clearApprovalAndTransfer(ownerOf(_tokenId), msg.sender, _tokenId);
-
         emit EmitBought(_tokenId, msg.value, msg.sender);
+      }else{
+        revert();
+      }
     }
 
     /// @dev removing a sale proposition

@@ -113,19 +113,6 @@ contract ERC721Planet is SimpleERC721 {
     // --------------------------------------------- Core Public functions ---------------------------------------
     // -----------------------------------------------------------------------------------------------------------
 
-    /// @dev Initial acquisition of the token
-/*    function initialBuyPlanet (uint _tokenId) payable public onlyNonexistentToken (_tokenId) {
-        require(msg.value == planets[_tokenId].price); // 0.1 eth = 100 finney
-        require(_tokenId < 10000); // Limit to 10 000 Planets
-
-        BalanceOfEther[owner] += msg.value;
-
-        _setTokenOwner(_tokenId, msg.sender);
-        _addTokenToOwnersList(msg.sender, _tokenId);
-
-        emit EmitBought(_tokenId, msg.value, msg.sender);
-    }
-*/
     /// @dev Create a Planet
     function createPlanet(uint _tokenId, bytes32 _name, string _description, string _ipfs, uint _price) public
     {
