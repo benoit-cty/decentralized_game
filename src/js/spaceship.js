@@ -68,7 +68,7 @@ App = {
         spaceshipTemplate.find('.spaceship-type').text(spaceship[1]);
         spaceshipTemplate.find('.spaceship-passenger').text(spaceship[4]);
         spaceshipTemplate.find('.spaceship-fret').text(spaceship[5]);
-        spaceshipTemplate.find('.spaceship-owner').text(getRandomInt(100, 1000));
+        spaceshipTemplate.find('.spaceship-owner').text(spaceship[6]);
         spaceshipTemplate.find('.spaceship-price').text(spaceship[3] * 1000 * 1000);
         spaceshipTemplate.find('img').attr('src', 'https://gateway.ipfs.io/ipfs/' + spaceship[2]);
         spaceshipTemplate.find('.btn-buy').attr('data-price', spaceship[3]);
