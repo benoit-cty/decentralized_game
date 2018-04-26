@@ -112,7 +112,7 @@ module.exports = function(callback) {
           var input = fs.createReadStream('./tools/spaceships-ipfs.txt');
           readLines(input).then(function (ipfs) {
 
-              for (i = 0; i < 50; i ++) {
+              for (i = 0; i < 100; i ++) {
                 // console.log(spaceshipsJSON[i].name);
                 var type = spaceshipsJSON[i].type;
                 var name = spaceshipsJSON[i].name;
